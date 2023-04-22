@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <h2 class="text-center mb-4">Home</h2>
+    {% if user %}
+        <p class="text-center">Welcome to Baidygram, {{ user.username }}!</p>
+    {% else %}
+        <p class="text-center">Welcome to Baidygram! Please log in to access your profile.</p>
+        <div class="text-center">
+        <a href="{% url 'login' %}" class="btn btn-primary">Log In</a>
+        <a href="{% url 'register' %}" class="btn btn-secondary">Register</a>
+        </div>
+    {% endif %}
+{% endblock %}

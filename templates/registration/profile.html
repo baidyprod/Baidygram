@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ object.username }}{% endblock %}
+
+{% block content %}
+
+<p>Username: {{ object.username }}</p>
+<p>Email: {{ object.email }}</p>
+<p>Website: {{ object.website }}</p>
+<p>Bio: {{ object.bio }}</p>
+<a href="{% url 'update_profile' %}">Update my profile</a>
+{% endblock %}

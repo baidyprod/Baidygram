@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ object.title }}</h1>
+  <p><img src="{{ object.image.url }}" alt="{{ object.title }}" style="max-width: 50%;" /></p>
+  <p>{{ object.text }}</p>
+  <p>Created at: {{ object.created_at }}</p>
+  <p>Is published: {{ object.is_published }}</p>
+
+  {% if user.is_authenticated and user == object.author %}
+    <a href="{% url 'blogpost_update' username=request.user.username pk=object.pk %}" class="btn btn-primary">Edit Post</a>
+  {% endif %}
+{% endblock %}

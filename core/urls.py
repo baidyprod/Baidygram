@@ -17,8 +17,9 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+from django.conf.urls.static import static
 
-from blog.views import RegisterFormView, UpdateProfile, UserProfile
+from blog.views import RegisterFormView, UpdateProfile, UserProfile, BlogPostDetailView, BlogPostUpdateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,9 +27,11 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path("accounts/register/", RegisterFormView.as_view(), name="register"),
     path("accounts/update_profile/", UpdateProfile.as_view(), name="update_profile"),
-    path("accounts/profile/", UserProfile.as_view(), name="profile"),
+    path("accounts/<str:username>/", UserProfile.as_view(), name="profile"),
+    path("accounts/<str:username>/<int:pk>/", BlogPostDetailView.as_view(), name="blogpost_detail"),
+    path("accounts/<str:username>/<int:pk>/update/", BlogPostUpdateView.as_view(), name="blogpost_update"),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns += [

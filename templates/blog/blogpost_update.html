@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Update Post</h1>
+    <form method="POST" class="form-group" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary" type="submit" name="publish">Update</button>
+        {% if not object.is_published %}
+            <button class="btn btn-secondary" type="submit" name="save_draft">Update a draft</button>
+        {% endif %}
+    </form>
+{% endblock %}

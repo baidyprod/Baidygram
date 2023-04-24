@@ -4,11 +4,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
+from django.contrib import messages
 
-from .models import BlogUser, BlogPost
+from .models import BlogUser, BlogPost, Comment
 
 User = get_user_model()
 
@@ -48,6 +49,7 @@ class UserProfile(generic.DetailView):
     template_name = "registration/profile.html"
     slug_field = 'user__username'
     slug_url_kwarg = 'username'
+    paginate_by = 12
 
     def get_object(self, queryset=None):
         username = self.kwargs.get(self.slug_url_kwarg)
@@ -57,20 +59,23 @@ class UserProfile(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.get_object()
-        posts = BlogPost.objects.filter(author=user.user, is_published=True)
-        drafts = BlogPost.objects.filter(author=user.user, is_published=False)
+        posts = BlogPost.objects.filter(author=user.user, is_published=True).order_by('-created_at')
+        drafts = BlogPost.objects.filter(author=user.user, is_published=False).order_by('-created_at')
         context['posts'] = posts
         context['drafts'] = drafts
         return context
 
 
-def home(request):
-    if request.user.is_authenticated:
-        logged_in_user = request.user
-        context = {'user': logged_in_user}
-    else:
-        context = {'user': None}
-    return render(request, 'blog/home.html', context)
+class BlogPostListView(generic.ListView):
+    model = BlogPost
+    template_name = 'blog/home.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_published=True)
+        return queryset
 
 
 class BlogPostCreateView(LoginRequiredMixin, generic.CreateView):
@@ -93,12 +98,23 @@ class BlogPostDetailView(generic.DetailView):
     model = BlogPost
     template_name = 'blog/blogpost_detail.html'
     context_object_name = 'blogpost'
+    paginate_by = 5
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get(self.pk_url_kwarg)
         username = self.kwargs.get('username')
         blogpost = get_object_or_404(BlogPost, pk=pk, author__username=username)
         return blogpost
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        comments = Comment.objects.filter(blogpost=self.object, author=self.object.author, is_published=True).order_by(
+            '-created_at')
+        paginator = Paginator(comments, self.paginate_by)
+        page = self.request.GET.get('page')
+        comments = paginator.get_page(page)
+        context['comments'] = comments
+        return context
 
 
 class BlogPostUpdateView(LoginRequiredMixin, generic.UpdateView):
@@ -122,4 +138,21 @@ class BlogPostUpdateView(LoginRequiredMixin, generic.UpdateView):
             form.instance.short_description = text[:50] + '...' if len(text) > 50 else text
         if 'publish' in self.request.POST:
             form.instance.is_published = True
+        return super().form_valid(form)
+
+
+class CommentCreateView(generic.CreateView):
+    model = Comment
+    fields = ['username', 'text']
+    template_name = 'blog/comment_create.html'
+    success_url = reverse_lazy('blog:home')
+
+    def dispatch(self, request, *args, **kwargs):
+        get_object_or_404(BlogPost, pk=self.kwargs['pk'], author__username=self.kwargs['username'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.author = User.objects.get(username=self.kwargs['username'])
+        form.instance.blogpost = BlogPost.objects.get(pk=self.kwargs['pk'])
+        messages.success(self.request, "Successfully sent a comment on moderation!")
         return super().form_valid(form)

@@ -5,7 +5,7 @@ from django.db import models
 
 class BlogUser(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
-    email = models.EmailField(unique=True, blank=True, null=True)
+    email = models.EmailField(unique=True, null=True, blank=True)
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', default='avatars/default_avatar/blank-profile-picture.png')
     website = models.URLField(blank=True)
@@ -22,8 +22,9 @@ class BlogPost(models.Model):
 
 
 class Comment(models.Model):
-    name = models.CharField(max_length=255)
-    message = models.TextField()
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    blogpost = models.ForeignKey(BlogPost, on_delete=models.CASCADE)
+    username = models.CharField(max_length=50)
+    text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_published = models.BooleanField(default=False)
-    is_reviewed = models.BooleanField(default=False)

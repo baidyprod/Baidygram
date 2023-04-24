@@ -19,17 +19,22 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 
-from blog.views import RegisterFormView, UpdateProfile, UserProfile, BlogPostDetailView, BlogPostUpdateView
+from blog.views import RegisterFormView, UpdateProfile, UserProfile, BlogPostDetailView, BlogPostUpdateView, \
+    CommentCreateView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('blog.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path("accounts/register/", RegisterFormView.as_view(), name="register"),
-    path("accounts/update_profile/", UpdateProfile.as_view(), name="update_profile"),
-    path("accounts/<str:username>/", UserProfile.as_view(), name="profile"),
-    path("accounts/<str:username>/<int:pk>/", BlogPostDetailView.as_view(), name="blogpost_detail"),
-    path("accounts/<str:username>/<int:pk>/update/", BlogPostUpdateView.as_view(), name="blogpost_update"),
+    path("admin/", admin.site.urls),
+
+    path("", include('blog.urls')),
+
+    path("", include('django.contrib.auth.urls')),
+    path("register/", RegisterFormView.as_view(), name="register"),
+    path("update_profile/", UpdateProfile.as_view(), name="update_profile"),
+
+    path("<str:username>/", UserProfile.as_view(), name="profile"),
+    path("<str:username>/<int:pk>/", BlogPostDetailView.as_view(), name="blogpost_detail"),
+    path("<str:username>/<int:pk>/update/", BlogPostUpdateView.as_view(), name="blogpost_update"),
+    path("<str:username>/<int:pk>/comment/", CommentCreateView.as_view(), name="comment_create"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

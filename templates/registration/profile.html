@@ -54,7 +54,7 @@
     <div class="row">
       {% for draft in drafts %}
         <div class="col-lg-4 col-md-6 col-sm-12">
-            <a href="{% url 'blogpost_detail' username=post.author.username pk=draft.id %}">
+            <a href="{% url 'blogpost_detail' username=draft.author.username pk=draft.id %}">
             <img src="{{ draft.image.url }}" alt="{{ draft.title }}" class="img-fluid">
                 <p class="mt-2 post-title">{{ draft.title }}</p>
                 <p class="mt-1 post-description">{{ draft.short_description }}</p>

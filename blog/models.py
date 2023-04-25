@@ -20,9 +20,11 @@ class BlogPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_published = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f'{str(self.title)}. Author: {str(self.author)}'
+
 
 class Comment(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     blogpost = models.ForeignKey(BlogPost, on_delete=models.CASCADE)
     username = models.CharField(max_length=50)
     text = models.TextField()

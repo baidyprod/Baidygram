@@ -15,7 +15,7 @@
     <div>
     {% for post in posts %}
         <div class="card mb-4 mx-auto" style="width: 30%;">
-            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="card-img-top mx-auto d-block">
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid">
             <div class="card-body">
                 <h5 class="card-title">{{ post.title }}</h5>
                 <p class="card-text">{{ post.short_description }}</p>
@@ -58,4 +58,11 @@
         </li>
     </ul>
     </div>
+<style>
+    .card .img-fluid {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+</style>
 {% endblock %}

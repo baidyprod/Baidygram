@@ -59,8 +59,10 @@ class UserProfile(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.get_object()
-        posts = BlogPost.objects.filter(author=user.user, is_published=True).order_by('-created_at')
-        drafts = BlogPost.objects.filter(author=user.user, is_published=False).order_by('-created_at')
+        posts = BlogPost.objects.select_related('author__bloguser').filter(is_published=True, author=user.user).\
+            order_by('-created_at')
+        drafts = BlogPost.objects.select_related('author__bloguser').filter(is_published=False, author=user.user).\
+            order_by('-created_at')
         context['posts'] = posts
         context['drafts'] = drafts
         return context
@@ -74,7 +76,7 @@ class BlogPostListView(generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(is_published=True)
+        queryset = queryset.select_related('author__bloguser').filter(is_published=True).order_by('-created_at')
         return queryset
 
 
@@ -108,8 +110,7 @@ class BlogPostDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        comments = Comment.objects.filter(blogpost=self.object, author=self.object.author, is_published=True).order_by(
-            '-created_at')
+        comments = Comment.objects.filter(blogpost=self.object, is_published=True).order_by('-created_at')
         paginator = Paginator(comments, self.paginate_by)
         page = self.request.GET.get('page')
         comments = paginator.get_page(page)
@@ -123,6 +124,11 @@ class BlogPostUpdateView(LoginRequiredMixin, generic.UpdateView):
     template_name = 'blog/blogpost_update.html'
     success_url = reverse_lazy('blog:home')
 
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user != self.get_object().author:
+            raise PermissionDenied("You do not have permission to update this blog post.")
+        return super().dispatch(request, *args, **kwargs)
+
     def get_object(self, queryset=None):
         pk = self.kwargs.get(self.pk_url_kwarg)
         username = self.kwargs.get('username')
@@ -130,9 +136,6 @@ class BlogPostUpdateView(LoginRequiredMixin, generic.UpdateView):
         return blogpost
 
     def form_valid(self, form):
-        if self.request.user != self.get_object().author:
-            raise PermissionDenied("You do not have permission to update this blog post.")
-        form.instance.author = self.request.user
         text = form.cleaned_data.get('text')
         if text:
             form.instance.short_description = text[:50] + '...' if len(text) > 50 else text

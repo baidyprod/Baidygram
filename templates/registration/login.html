@@ -3,6 +3,12 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
+<style>
+    .group {
+  margin-bottom: 650px;
+}
+</style>
+<div class="group">
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -17,9 +23,10 @@
                     <label for="{{ form.password.id_for_label }}">Password:</label>
                     {{ form.password }}
                 </div>
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-success">Log in</button>
             </form>
         </div>
     </div>
+</div>
 </div>
 {% endblock %}

@@ -27,6 +27,7 @@
         </div>
     {% endfor %}
     </div>
+    {% if posts %}
     <div class="pagination mt-5 mx-auto">
     <ul class="pagination mx-auto">
         <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
@@ -58,6 +59,7 @@
         </li>
     </ul>
     </div>
+    {% endif %}
 <style>
     .card .img-fluid {
         width: 100%;

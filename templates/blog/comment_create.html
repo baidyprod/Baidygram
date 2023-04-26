@@ -3,11 +3,21 @@
 {% block title %}Create Comment{% endblock %}
 
 {% block content %}
+<style>
+  .btn-secondary {
+  margin-top: 10px;
+}
+.form-group {
+  margin-bottom: 300px;
+}
+</style>
   <h2 class="text-center mb-4">Create Comment</h2>
+  <div class="form-group">
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Submit to admin</button>
+    <button type="submit" class="btn btn-success">Submit to admin</button>
   </form>
   <a href="{% url 'blog:home' %}" class="btn btn-secondary">Cancel</a>
+  </div>
 {% endblock %}

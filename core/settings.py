@@ -136,3 +136,11 @@ INTERNAL_IPS = [
 ]
 
 LOGIN_REDIRECT_URL = 'blog:home'
+
+# CELERY SETTINGS
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+# EMAIL BACKEND IN DEBUG MODE
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

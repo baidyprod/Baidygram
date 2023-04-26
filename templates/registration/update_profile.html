@@ -3,10 +3,18 @@
 {% block title %}Update profile{% endblock %}
 
 {% block content %}
-<form method="POST" class="form-group" enctype="multipart/form-data">
+<style>
+table tr td {
+  padding: 10px;
+    }
+    .form-group {
+  margin-bottom: 300px;
+}
+</style>
+<form method="POST" class="form-group my-custom-class" enctype="multipart/form-data">
     {% csrf_token %}
     <table>
-      {{ form.as_table }}
+      {{ form.as_p }}
     </table>
     <button type="submit" class="btn btn-success">Update</button>
 </form>

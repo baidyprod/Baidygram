@@ -1,7 +1,7 @@
+from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
-from django.contrib import admin
-from django.contrib.admin.widgets import ForeignKeyRawIdWidget
+
 from .models import BlogPost, Comment
 
 

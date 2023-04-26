@@ -1,23 +1,27 @@
-from django.contrib.auth import authenticate, get_user_model, login
-from django.views import generic
-from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse_lazy
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404
-from django.core.exceptions import PermissionDenied
 from django.contrib import messages
+from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
+from django.views import generic
 
-from .models import BlogUser, BlogPost, Comment
+from .forms import ContactUsForm
+from .models import BlogPost, BlogUser, Comment
+from .tasks import send_mail as celery_send_mail
 
 User = get_user_model()
 
 
-class RegisterFormView(generic.FormView):
+class RegisterFormView(SuccessMessageMixin, generic.FormView):
     template_name = 'registration/register.html'
     form_class = UserCreationForm
     success_url = reverse_lazy("blog:home")
+    success_message = 'Successfully registered, welcome!'
 
     def form_valid(self, form):
         user = form.save()
@@ -33,14 +37,16 @@ class UpdateProfile(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView)
     fields = ["email", "bio", "avatar", "website"]
     template_name = 'registration/update_profile.html'
     success_url = reverse_lazy("blog:home")
+    success_message = 'The profile was updated successfully!'
 
     def get_object(self, queryset=None):
         user = self.request.user
         return user.bloguser
 
     def form_valid(self, form):
-        if self.request.user != self.get_object().user:
-            raise PermissionDenied("You do not have permission to update this profile.")
+        if form.cleaned_data.get('email'):
+            form.instance.user.email = form.cleaned_data.get('email')
+            form.instance.user.save()
         return super().form_valid(form)
 
 
@@ -80,11 +86,12 @@ class BlogPostListView(generic.ListView):
         return queryset
 
 
-class BlogPostCreateView(LoginRequiredMixin, generic.CreateView):
+class BlogPostCreateView(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
     model = BlogPost
     template_name = 'blog/blogpost_create.html'
     fields = ['title', 'text', 'image']
     success_url = reverse_lazy('blog:home')
+    success_message = 'The post was created!'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -93,6 +100,14 @@ class BlogPostCreateView(LoginRequiredMixin, generic.CreateView):
             form.instance.short_description = text[:50] + '...' if len(text) > 50 else text
         if 'publish' in self.request.POST:
             form.instance.is_published = True
+
+            # Email to admin
+            subject = 'New post notification!'
+            message = f'New post by {form.instance.author}. Check it out!'
+            from_email = 'noreply@baidygram.com'
+            to_email = [user.email for user in User.objects.filter(is_staff=True)]
+            celery_send_mail.apply_async((subject, message, from_email, to_email))
+
         return super().form_valid(form)
 
 
@@ -118,11 +133,12 @@ class BlogPostDetailView(generic.DetailView):
         return context
 
 
-class BlogPostUpdateView(LoginRequiredMixin, generic.UpdateView):
+class BlogPostUpdateView(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView):
     model = BlogPost
     fields = ['title', 'text']
     template_name = 'blog/blogpost_update.html'
     success_url = reverse_lazy('blog:home')
+    success_message = 'The post was updated!'
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.user != self.get_object().author:
@@ -144,18 +160,58 @@ class BlogPostUpdateView(LoginRequiredMixin, generic.UpdateView):
         return super().form_valid(form)
 
 
-class CommentCreateView(generic.CreateView):
+class CommentCreateView(SuccessMessageMixin, generic.CreateView):
     model = Comment
     fields = ['username', 'text']
     template_name = 'blog/comment_create.html'
     success_url = reverse_lazy('blog:home')
+    success_message = 'Successfully sent a comment on moderation!'
 
     def dispatch(self, request, *args, **kwargs):
         get_object_or_404(BlogPost, pk=self.kwargs['pk'], author__username=self.kwargs['username'])
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        form.instance.author = User.objects.get(username=self.kwargs['username'])
-        form.instance.blogpost = BlogPost.objects.get(pk=self.kwargs['pk'])
-        messages.success(self.request, "Successfully sent a comment on moderation!")
+        blogpost = get_object_or_404(BlogPost, pk=self.kwargs['pk'], author__username=self.kwargs['username'])
+        form.instance.blogpost = blogpost
+
+        scheme = self.request.scheme
+        current_site = get_current_site(self.request)
+        url = reverse("blogpost_detail", args=[blogpost.author.username, blogpost.pk])
+        absolute_url = f'{scheme}://{current_site.domain}{url}'
+
+        # Email to admin
+        subject = 'New comment notification!'
+        message = f'New comment by {form.instance.username}. Comment: {form.instance.text}'
+        from_email = 'noreply@baidygram.com'
+        to_email = [user.email for user in User.objects.filter(is_staff=True)]
+        celery_send_mail.apply_async((subject, message, from_email, to_email))
+
+        # Email to user
+        subject = f'New comment on post {blogpost.title}'
+        message = f'New comment by {form.instance.username} on post {absolute_url}. Text: {form.instance.text}'
+        from_email = 'noreply@baidygram.com'
+        to_email = [blogpost.author.email]
+        celery_send_mail.apply_async((subject, message, from_email, to_email))
+
         return super().form_valid(form)
+
+
+def contact_us(request):
+    error_msg = ''
+    if request.method == 'POST':
+        form = ContactUsForm(request.POST)
+        if form.is_valid():
+            customer_name = form.cleaned_data['name']
+            subj = form.cleaned_data['subject']
+            subject = f'{customer_name}: {subj}'
+            message = form.cleaned_data['text']
+            from_email = form.cleaned_data['email']
+            to_email = ['contact@baidygram.com']
+            celery_send_mail.apply_async((subject, message, from_email, to_email))
+            messages.success(request, 'Your message was sent to us :)')
+            return redirect('blog:home')
+    else:
+        form = ContactUsForm()
+    context = {'form': form, 'error_msg': error_msg}
+    return render(request, 'blog/contact_us.html', context)

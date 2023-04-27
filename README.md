@@ -1,3 +1,11 @@
-# Django blog
+# Baidygram
 
-Just a blog created by baidy using Django
+Instagram-like blog created by baidy.
+
+## Stack:
+
+-Django
+-Celery
+-Redis
+-SQLite
+-Flake8

@@ -13,6 +13,7 @@
     </div>
     {% endif %}
     <div>
+        {% if posts %}
     {% for post in posts %}
         <div class="card mb-4 mx-auto" style="width: 30%;">
             <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid">
@@ -26,6 +27,9 @@
             </div>
         </div>
     {% endfor %}
+        {% else %}
+        <h2 class="text-center mb-4" style="margin-bottom: 700px !important;">No posts</h2>
+        {% endif %}
     </div>
     {% if posts %}
     <div class="pagination mt-5 mx-auto">

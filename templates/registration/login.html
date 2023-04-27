@@ -3,6 +3,7 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
+
 <style>
     .group {
   margin-bottom: 650px;
@@ -15,6 +16,15 @@
             <h2 class="text-center mb-4">Login</h2>
             <form method="post">
                 {% csrf_token %}
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
                 <div class="form-group">
                     <label for="{{ form.username.id_for_label }}">Username:</label>
                     {{ form.username }}

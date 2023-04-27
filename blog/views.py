@@ -95,9 +95,17 @@ class BlogPostCreateView(LoginRequiredMixin, SuccessMessageMixin, generic.Create
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+
+        image = form.cleaned_data.get('image')
+        if image:
+            if image.size > 1000000:
+                form.add_error('image', 'Image file size cannot exceed 1 Mb.')
+                return self.form_invalid(form)
+
         text = form.cleaned_data.get('text')
         if text:
             form.instance.short_description = text[:50] + '...' if len(text) > 50 else text
+
         if 'publish' in self.request.POST:
             form.instance.is_published = True
 

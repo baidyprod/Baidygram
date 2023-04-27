@@ -6,10 +6,10 @@ Instagram-like blog created by baidy.
 
 -Django
 
+-SQLite
+
 -Celery
 
 -Redis
-
--SQLite
 
 -Flake8

@@ -13,3 +13,5 @@ Instagram-like blog created by baidy.
 -Redis
 
 -Flake8
+
+-Whitenoise

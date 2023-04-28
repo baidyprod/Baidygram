@@ -44,9 +44,17 @@ class UpdateProfile(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView)
         return user.bloguser
 
     def form_valid(self, form):
+
+        avatar = form.cleaned_data.get('avatar')
+        if avatar:
+            if avatar.size > 1000000:
+                form.add_error('avatar', 'Avatar file size cannot exceed 1 Mb.')
+                return self.form_invalid(form)
+
         if form.cleaned_data.get('email'):
             form.instance.user.email = form.cleaned_data.get('email')
             form.instance.user.save()
+
         return super().form_valid(form)
 
 

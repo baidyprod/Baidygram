@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.forms import UserCreationForm
@@ -121,7 +122,7 @@ class BlogPostCreateView(LoginRequiredMixin, SuccessMessageMixin, generic.Create
             # Email to admin
             subject = 'New post notification!'
             message = f'New post by {form.instance.author}. Check it out!'
-            from_email = 'noreply@baidygram.com'
+            from_email = settings.NOREPLY_EMAIL
             to_email = [user.email for user in User.objects.filter(is_staff=True)]
             celery_send_mail.apply_async((subject, message, from_email, to_email))
 
@@ -206,14 +207,14 @@ class CommentCreateView(SuccessMessageMixin, generic.CreateView):
         # Email to admin
         subject = 'New comment notification!'
         message = f'New comment by {form.instance.username}. Comment: {form.instance.text}'
-        from_email = 'noreply@baidygram.com'
+        from_email = settings.NOREPLY_EMAIL
         to_email = [user.email for user in User.objects.filter(is_staff=True)]
         celery_send_mail.apply_async((subject, message, from_email, to_email))
 
         # Email to user
         subject = f'New comment on post {blogpost.title}'
         message = f'New comment by {form.instance.username} on post {absolute_url}. Text: {form.instance.text}'
-        from_email = 'noreply@baidygram.com'
+        from_email = settings.NOREPLY_EMAIL
         to_email = [blogpost.author.email]
         celery_send_mail.apply_async((subject, message, from_email, to_email))
 
@@ -227,11 +228,12 @@ def contact_us(request):
         if form.is_valid():
             customer_name = form.cleaned_data['name']
             subj = form.cleaned_data['subject']
-            subject = f'{customer_name}: {subj}'
+            from_email_customer = form.cleaned_data['email']
+            subject = f'Name:{customer_name}. Email:{from_email_customer}. Subject: {subj}'
             message = form.cleaned_data['text']
-            from_email = form.cleaned_data['email']
-            to_email = ['contact@baidygram.com']
-            celery_send_mail.apply_async((subject, message, from_email, to_email))
+            from_email_baidygram = settings.NOREPLY_EMAIL
+            to_email = (settings.CONTACT_EMAIL, )
+            celery_send_mail.apply_async((subject, message, from_email_baidygram, to_email))
             messages.success(request, 'Your message was sent to us :)')
             return redirect('blog:home')
     else:

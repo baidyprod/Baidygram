@@ -7,3 +7,5 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+NOREPLY_EMAIL = 'noreply@baidygram.com'
+CONTACT_EMAIL = 'contact@baidygram.com'

@@ -6,6 +6,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views import generic
@@ -99,7 +100,7 @@ class BlogPostCreateView(LoginRequiredMixin, SuccessMessageMixin, generic.Create
     template_name = 'blog/blogpost_create.html'
     fields = ['title', 'text', 'image']
     success_url = reverse_lazy('blog:home')
-    success_message = 'The post was created!'
+    success_message = 'The publication was created!'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -133,6 +134,12 @@ class BlogPostDetailView(generic.DetailView):
     context_object_name = 'blogpost'
     paginate_by = 5
 
+    def dispatch(self, request, *args, **kwargs):
+        blogpost = self.get_object()
+        if not blogpost.is_published and request.user != blogpost.author:
+            raise Http404("This post does not exist.")
+        return super().dispatch(request, *args, **kwargs)
+
     def get_object(self, queryset=None):
         pk = self.kwargs.get(self.pk_url_kwarg)
         username = self.kwargs.get('username')
@@ -154,7 +161,7 @@ class BlogPostUpdateView(LoginRequiredMixin, SuccessMessageMixin, generic.Update
     fields = ['title', 'text']
     template_name = 'blog/blogpost_update.html'
     success_url = reverse_lazy('blog:home')
-    success_message = 'The post was updated!'
+    success_message = 'The publication was updated!'
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.user != self.get_object().author:

@@ -70,15 +70,25 @@
                             <p class="mb-0">© 2023 Baidygram</p>
                         </li>
                         <li class="list-inline-item">
-                            <a href="{% url 'contact_us' %}" class="text-white">Contact Us</a>
+                            <button type="button" class="btn btn-primary js-contact" data-url="{% url 'contact_us' %}">
+                            Contact Us
+                            </button>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
     </footer>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <div class="modal fade" id="modal-contact">
+    <div class="modal-dialog">
+      <div class="modal-content">
+          {% include 'blog/contact_us.html' %}
+      </div>
+    </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.16.0/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/contact.js' %}"></script>
 </body>
 </html>

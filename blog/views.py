@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,8 +6,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.views import generic
 
@@ -222,21 +222,22 @@ class CommentCreateView(SuccessMessageMixin, generic.CreateView):
 
 
 def contact_us(request):
-    error_msg = ''
+    data = dict()
     if request.method == 'POST':
         form = ContactUsForm(request.POST)
         if form.is_valid():
+            data['form_is_valid'] = True
             customer_name = form.cleaned_data['name']
-            subj = form.cleaned_data['subject']
             from_email_customer = form.cleaned_data['email']
-            subject = f'Name:{customer_name}. Email:{from_email_customer}. Subject: {subj}'
-            message = form.cleaned_data['text']
+            subject = form.cleaned_data['subject']
+            mes = form.cleaned_data['text']
+            message = f'Name:{customer_name}. Email:{from_email_customer}. Message: {mes}'
             from_email_baidygram = settings.NOREPLY_EMAIL
-            to_email = (settings.CONTACT_EMAIL, )
+            to_email = (settings.CONTACT_EMAIL,)
             celery_send_mail.apply_async((subject, message, from_email_baidygram, to_email))
-            messages.success(request, 'Your message was sent to us :)')
-            return redirect('blog:home')
+        else:
+            data['form_is_valid'] = False
     else:
         form = ContactUsForm()
-    context = {'form': form, 'error_msg': error_msg}
-    return render(request, 'blog/contact_us.html', context)
+    data['html_form'] = render_to_string('blog/contact_us.html', {'form': form}, request=request)
+    return JsonResponse(data)

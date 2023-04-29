@@ -1,13 +1,4 @@
-{% extends "base.html" %}
-
 {% block content %}
-<style>
-  .group {
-  margin-bottom: 300px;
-}
-</style>
-<div class="group">
-<div class="container mt-5">
     <h2>Contact Us</h2>
     <form method="POST">
       {% csrf_token %}
@@ -29,6 +20,4 @@
       </div>
       <button type="submit" class="btn btn-success">Submit</button>
     </form>
-</div>
-</div>
 {% endblock %}

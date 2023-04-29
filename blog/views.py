@@ -7,7 +7,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.http import Http404, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.views import generic

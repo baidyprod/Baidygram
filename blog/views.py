@@ -22,7 +22,7 @@ User = get_user_model()
 class RegisterFormView(SuccessMessageMixin, generic.FormView):
     template_name = 'registration/register.html'
     form_class = UserCreationForm
-    success_url = reverse_lazy("blog:home")
+    success_url = reverse_lazy("home")
     success_message = 'Successfully registered, welcome!'
 
     def form_valid(self, form):
@@ -38,7 +38,7 @@ class UpdateProfile(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView)
     model = BlogUser
     fields = ["email", "bio", "avatar", "website"]
     template_name = 'registration/update_profile.html'
-    success_url = reverse_lazy("blog:home")
+    success_url = reverse_lazy("home")
     success_message = 'The profile was updated successfully!'
 
     def get_object(self, queryset=None):
@@ -100,7 +100,7 @@ class BlogPostCreateView(LoginRequiredMixin, SuccessMessageMixin, generic.Create
     model = BlogPost
     template_name = 'blog/blogpost_create.html'
     fields = ['title', 'text', 'image']
-    success_url = reverse_lazy('blog:home')
+    success_url = reverse_lazy('home')
     success_message = 'The publication was created!'
 
     def form_valid(self, form):
@@ -167,7 +167,7 @@ class BlogPostUpdateView(LoginRequiredMixin, SuccessMessageMixin, generic.Update
     model = BlogPost
     fields = ['title', 'text']
     template_name = 'blog/blogpost_update.html'
-    success_url = reverse_lazy('blog:home')
+    success_url = reverse_lazy('home')
     success_message = 'The publication was updated!'
 
     def dispatch(self, request, *args, **kwargs):
@@ -194,7 +194,7 @@ class CommentCreateView(SuccessMessageMixin, generic.CreateView):
     model = Comment
     fields = ['username', 'text']
     template_name = 'blog/comment_create.html'
-    success_url = reverse_lazy('blog:home')
+    success_url = reverse_lazy('home')
     success_message = 'Successfully sent a comment on moderation!'
 
     def dispatch(self, request, *args, **kwargs):

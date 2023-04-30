@@ -19,7 +19,6 @@
         <a href="{% url 'update_profile' %}" class="btn btn-primary mt-3">Update my profile</a>
     {% endif %}
 </div>
-
 <ul class="nav nav-tabs" id="myTabs" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Posts</a>
@@ -45,7 +44,7 @@
         <div class="col-12">
           <p>No posts</p>
         </div>
-        <a href="{% url 'blog:create_post' %}" class="btn btn-primary mt-1">Create a post</a>
+        <a href="{% url 'create_post' %}" class="btn btn-primary mt-1">Create a post</a>
       {% endfor %}
     </div>
   </div>
@@ -64,7 +63,7 @@
         <div class="col-12">
           <p>No drafts</p>
         </div>
-        <a href="{% url 'blog:create_post' %}" class="btn btn-primary mt-1">Create a post</a>
+        <a href="{% url 'create_post' %}" class="btn btn-primary mt-1">Create a post</a>
       {% endfor %}
     </div>
   </div>

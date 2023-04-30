@@ -3,10 +3,8 @@
 <div style="text-align: center;">
     {% if not object.is_published %}
     <p style="color: grey; font-size: 2rem;">Draft</p>
-    <h1 style="font-size: 2rem;">{{ object.title }}</h1>
-    {% else %}
-    <h1 style="font-size: 2rem;">{{ object.title }}</h1>
     {% endif %}
+    <h1 style="font-size: 2rem;">{{ object.title }}</h1>
     <p><img src="{{ object.image.url }}" alt="{{ object.title }}" style="max-width: 50%;" /></p>
     <p style="font-size: 1.2rem;">{{ object.text }}</p>
     <p style="color: grey; font-size: 0.8rem;">Created at: {{ object.created_at }}</p>

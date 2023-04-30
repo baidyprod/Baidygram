@@ -1,14 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Update profile{% endblock %}
 {% block content %}
-<style>
-    table tr td {
-    padding: 10px;
-    }
-    .form-group {
-    margin-bottom: 300px;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/registration/update_profile.css' %}">
 <form method="POST" class="form-group my-custom-class" enctype="multipart/form-data">
     {% csrf_token %}
     <table>

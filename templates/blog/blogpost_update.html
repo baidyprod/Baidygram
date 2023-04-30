@@ -1,10 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<style>
-    .form-group {
-    margin-bottom: 300px;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/blog/blogpost_update.css' %}">
 <h1>Update Post</h1>
 <form method="POST" class="form-group" enctype="multipart/form-data">
     {% csrf_token %}

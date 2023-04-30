@@ -1,14 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Create Comment{% endblock %}
 {% block content %}
-<style>
-    .btn-secondary {
-    margin-top: 10px;
-    }
-    .form-group {
-    margin-bottom: 300px;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/blog/comment_create.css' %}">
 <h2 class="text-center mb-4">Create Comment</h2>
 <div class="form-group">
     <form method="post">

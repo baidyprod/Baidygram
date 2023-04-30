@@ -243,13 +243,12 @@ def contact_us(request):
         if form.is_valid():
             data['form_is_valid'] = True
             customer_name = form.cleaned_data['name']
-            from_email_customer = form.cleaned_data['email']
-            subject = form.cleaned_data['subject']
+            customer_email = form.cleaned_data['email']
+            subj = form.cleaned_data['subject']
             mes = form.cleaned_data['text']
-            message = f'Name: {customer_name}\nEmail: {from_email_customer}\nMessage: {mes}'
-            from_email_baidygram = settings.NOREPLY_EMAIL
-            to_email = (settings.CONTACT_EMAIL,)
-            celery_send_mail.apply_async((subject, message, from_email_baidygram, to_email))
+            subject = 'New user application!'
+            message = f'Name: {customer_name}\nEmail: {customer_email}\nSubject: {subj}\nMessage: {mes}'
+            celery_send_mail.apply_async((subject, message, settings.NOREPLY_EMAIL, (settings.CONTACT_EMAIL, )))
         else:
             data['form_is_valid'] = False
     else:

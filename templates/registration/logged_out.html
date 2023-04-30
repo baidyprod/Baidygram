@@ -1,20 +1,17 @@
 {% extends 'base.html' %}
-
 {% block title %}Logged out{% endblock %}
-
 {% block content %}
 <style>
     .form-group {
-  margin-bottom: 700px;
-}
+    margin-bottom: 700px;
+    }
 </style>
 <div class="form-group">
-<div class="container mt-5">
-    <p class="text-center">Logged out!</p>
-    <div class="text-center">
-        <a href="{% url 'login' %}" class="btn btn-primary">Log in again</a>
+    <div class="container mt-5">
+        <p class="text-center">Logged out!</p>
+        <div class="text-center">
+            <a href="{% url 'login' %}" class="btn btn-primary">Log in again</a>
+        </div>
     </div>
 </div>
-</div>
 {% endblock %}
-

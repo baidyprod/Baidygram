@@ -231,7 +231,7 @@ def contact_us(request):
             from_email_customer = form.cleaned_data['email']
             subject = form.cleaned_data['subject']
             mes = form.cleaned_data['text']
-            message = f'Name:{customer_name}. Email:{from_email_customer}. Message: {mes}'
+            message = f'Name: {customer_name}\nEmail: {from_email_customer}\nMessage: {mes}'
             from_email_baidygram = settings.NOREPLY_EMAIL
             to_email = (settings.CONTACT_EMAIL,)
             celery_send_mail.apply_async((subject, message, from_email_baidygram, to_email))

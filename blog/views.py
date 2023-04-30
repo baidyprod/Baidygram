@@ -108,8 +108,8 @@ class BlogPostCreateView(LoginRequiredMixin, SuccessMessageMixin, generic.Create
 
         image = form.cleaned_data.get('image')
         if image:
-            if image.size > 1000000:
-                form.add_error('image', 'Image file size cannot exceed 1 Mb.')
+            if image.size > 3000000:
+                form.add_error('image', 'Image file size cannot exceed 3 Mbs.')
                 return self.form_invalid(form)
 
         text = form.cleaned_data.get('text')

@@ -119,12 +119,18 @@ class BlogPostCreateView(LoginRequiredMixin, SuccessMessageMixin, generic.Create
         if 'publish' in self.request.POST:
             form.instance.is_published = True
 
+            scheme = self.request.scheme
+            current_site = get_current_site(self.request)
+            url = reverse("profile", args=[form.instance.author.username])
+            absolute_url_user = f'{scheme}://{current_site.domain}{url}'
+
             # Email to admin
             subject = 'New post notification!'
-            message = f'New post by {form.instance.author}. Check it out!'
+            message = ''
+            html_message = f'New post by <a href="{absolute_url_user}">{form.instance.author}</a><br>Check it out!'
             from_email = settings.NOREPLY_EMAIL
             to_email = [user.email for user in User.objects.filter(is_staff=True)]
-            celery_send_mail.apply_async((subject, message, from_email, to_email))
+            celery_send_mail.apply_async((subject, message, from_email, to_email, html_message))
 
         return super().form_valid(form)
 
@@ -198,25 +204,34 @@ class CommentCreateView(SuccessMessageMixin, generic.CreateView):
     def form_valid(self, form):
         blogpost = get_object_or_404(BlogPost, pk=self.kwargs['pk'], author__username=self.kwargs['username'])
         form.instance.blogpost = blogpost
+        form.instance.save()
 
         scheme = self.request.scheme
         current_site = get_current_site(self.request)
-        url = reverse("blogpost_detail", args=[blogpost.author.username, blogpost.pk])
-        absolute_url = f'{scheme}://{current_site.domain}{url}'
+        url_for_user = reverse("blogpost_detail", args=[blogpost.author.username, blogpost.pk])
+        absolute_url_post = f'{scheme}://{current_site.domain}{url_for_user}'
+
+        url_for_admin = reverse('admin:blog_comment_change', args=[form.instance.pk])
+        absolute_url_for_admin = f'{scheme}://{current_site.domain}{url_for_admin}'
 
         # Email to admin
         subject = 'New comment notification!'
-        message = f'New comment by {form.instance.username}. Comment: {form.instance.text}'
+        message = ''
+        html_message = f'<a href="{absolute_url_for_admin}">Edit comment</a><br>On <a href="{absolute_url_post}">' \
+                       f'this post</a><br>Commentator: {form.instance.username}<br>Comment: {form.instance.text}'
         from_email = settings.NOREPLY_EMAIL
         to_email = [user.email for user in User.objects.filter(is_staff=True)]
-        celery_send_mail.apply_async((subject, message, from_email, to_email))
+        celery_send_mail.apply_async((subject, message, from_email, to_email, html_message))
 
         # Email to user
         subject = f'New comment on post {blogpost.title}'
-        message = f'New comment by {form.instance.username} on post {absolute_url}. Text: {form.instance.text}'
+        message = ''
+        html_message = f'New comment by "{form.instance.username}" on <a href="{absolute_url_post}">this post</a>' \
+                       f'<br>Comment: {form.instance.text}<br>Remember, that this comment is not published yet, and ' \
+                       f'has to be approved by the administrator'
         from_email = settings.NOREPLY_EMAIL
         to_email = [blogpost.author.email]
-        celery_send_mail.apply_async((subject, message, from_email, to_email))
+        celery_send_mail.apply_async((subject, message, from_email, to_email, html_message))
 
         return super().form_valid(form)
 

@@ -22,9 +22,9 @@ urlpatterns = [
     path("<str:username>/<int:pk>/update/", BlogPostUpdateView.as_view(), name="blogpost_update"),
     path("<str:username>/<int:pk>/comment/", CommentCreateView.as_view(), name="comment_create"),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
 if settings.DEBUG:
     urlpatterns += [
         path('__debug__/', include('debug_toolbar.urls')),
-    ]
+    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -2,7 +2,7 @@
 
 Instagram-like blog created by baidy.
 
-_Note: the project is both production and development ready_
+_Note: the project is both production and development ready._
 
 ## Stack:
 
@@ -13,23 +13,23 @@ _Note: the project is both production and development ready_
 * Bootstrap
 * jQuery
 * Flake8
-* Whitenoise
-* Gunicorn
-* Google Cloud
+* Whitenoise (For production)
+* Gunicorn (For production)
+* Google Cloud (For production)
 
 ## Screenshots:
 
-[picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/rsp1p6nogr7cbk7t8duu.png "Let's register an account and create two posts")
-[picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054986/Baidygram%20screenshots/xnc0t2bdjfapt5zdrkep.png "Admin receives a new post notification on email")
-[picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/bz5fkuddkeazzqkaaanh.png "It is the profile page")
-[picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/c9oimqxmhta7nuib96qg.png "We can open the publication and leave a comment")
-[picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054986/Baidygram%20screenshots/aapyymkrank7lxjaymss.png "User receives a convenient new comment email notification")
-[picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054986/Baidygram%20screenshots/kx4ztoibumhbvzratk1q.png "Admin receives it too, even with the link on the comment admin page!")
-[picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/wxbjndj2s5m3jow4jlhe.png "The comment needs to be reviewed and then published by admin")
-[picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/tsbkark4laaip9fbxqyk.png "Here is also the the admin page to edit posts")
-[picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054601/Baidygram%20screenshots/nzvmknyc5whjwbfge7mc.png "How the published comment looks like")
-[picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/ink76djnxaibosqsd8w3.png "Contact us form is ajax and works at the same page")
-[picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054986/Baidygram%20screenshots/ezlmwurhe7rsehnc5aew.png "Customer support email immediately receive the application email!")
+![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/rsp1p6nogr7cbk7t8duu.png "Let's register an account and create two posts")
+![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054986/Baidygram%20screenshots/xnc0t2bdjfapt5zdrkep.png "Admin receives a new post notification on email")
+![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/bz5fkuddkeazzqkaaanh.png "It is the profile page")
+![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/c9oimqxmhta7nuib96qg.png "We can open the publication and leave a comment")
+![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054986/Baidygram%20screenshots/aapyymkrank7lxjaymss.png "User receives a convenient new comment email notification")
+![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054986/Baidygram%20screenshots/kx4ztoibumhbvzratk1q.png "Admin receives it too, even with the link on the comment admin page!")
+![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/wxbjndj2s5m3jow4jlhe.png "The comment needs to be reviewed and then published by admin")
+![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/tsbkark4laaip9fbxqyk.png "Here is also the the admin page to edit posts")
+![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054601/Baidygram%20screenshots/nzvmknyc5whjwbfge7mc.png "How the published comment looks like")
+![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/ink76djnxaibosqsd8w3.png "Contact us form is ajax and works at the same page")
+![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054986/Baidygram%20screenshots/ezlmwurhe7rsehnc5aew.png "Customer support email immediately receive the application email!")
 
 ## How to run?
 

@@ -13,6 +13,7 @@ _Note: the project is both production and development ready._
 * Bootstrap
 * jQuery, ajax
 * Flake8
+* Debug toolbar (For SQL queries optimization)
 * Whitenoise (For production)
 * Gunicorn (For production)
 * Google Cloud (For production)

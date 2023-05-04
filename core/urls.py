@@ -10,17 +10,18 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 
     path('', BlogPostListView.as_view(), name='home'),
-    path('create/', BlogPostCreateView.as_view(), name='create_post'),
-    path("contact_us/", contact_us, name="contact_us"),
 
-    path("", include('django.contrib.auth.urls')),
-    path("register/", RegisterFormView.as_view(), name="register"),
-    path("update_profile/", UpdateProfile.as_view(), name="update_profile"),
+    path('create_post/', BlogPostCreateView.as_view(), name='create_post'),
+    path("contact/", contact_us, name="contact_us"),
 
-    path("<str:username>/", UserProfile.as_view(), name="profile"),
-    path("<str:username>/<int:pk>/", BlogPostDetailView.as_view(), name="blogpost_detail"),
-    path("<str:username>/<int:pk>/update/", BlogPostUpdateView.as_view(), name="blogpost_update"),
-    path("<str:username>/<int:pk>/comment/", CommentCreateView.as_view(), name="comment_create"),
+    path("accounts/", include('django.contrib.auth.urls')),
+    path("accounts/register/", RegisterFormView.as_view(), name="register"),
+    path("accounts/update_profile/", UpdateProfile.as_view(), name="update_profile"),
+
+    path("profile/<str:username>/", UserProfile.as_view(), name="profile"),
+    path("profile/<str:username>/<int:pk>/", BlogPostDetailView.as_view(), name="blogpost_detail"),
+    path("profile/<str:username>/<int:pk>/update/", BlogPostUpdateView.as_view(), name="blogpost_update"),
+    path("profile/<str:username>/<int:pk>/comment/", CommentCreateView.as_view(), name="comment_create"),
 
 ]
 

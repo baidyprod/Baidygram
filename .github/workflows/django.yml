@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
     
 env:
-  SECRET_KEY: 5nvtwvytnortgvwrcynenoryonciti67ergf7q3f4utcncl4gwlirpqog74yoqr
+  SECRET_KEY: "5nvtwvytnortgvwrcynenoryonciti67ergf7q3f4utcncl4gwlirpqog74yoqr"
 
 jobs:
   build:

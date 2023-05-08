@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
+from django.core.files.images import get_image_dimensions
 from django.core.paginator import Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -51,6 +52,11 @@ class UpdateProfile(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView)
         if avatar:
             if avatar.size > 1000000:
                 form.add_error('avatar', 'Avatar file size cannot exceed 1 Mb.')
+                return self.form_invalid(form)
+
+            w, h = get_image_dimensions(avatar)
+            if 0.95 < w / h or w / h > 1.05:
+                form.add_error('avatar', 'Avatar aspect ratio should be 1:1')
                 return self.form_invalid(form)
 
         if form.cleaned_data.get('email'):
@@ -110,6 +116,11 @@ class BlogPostCreateView(LoginRequiredMixin, SuccessMessageMixin, generic.Create
         if image:
             if image.size > 3000000:
                 form.add_error('image', 'Image file size cannot exceed 3 Mbs.')
+                return self.form_invalid(form)
+
+            w, h = get_image_dimensions(image)
+            if 0.73 < w / h or w / h > 1.35:
+                form.add_error('image', 'Image aspect ratio should be between 3:4 and 4:3')
                 return self.form_invalid(form)
 
         text = form.cleaned_data.get('text')

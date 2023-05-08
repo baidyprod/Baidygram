@@ -39,13 +39,14 @@
             </ul>
         </div>
     </nav>
-    <div class="container mt-5">
+    <div>
+    <div class="container mt-5" id="all-content">
         {% block content %}
         {% endblock %}
     </div>
     <footer class="bg-dark text-white py-3">
         <div>
-            <div class="row">
+            <div class="row" style="width: 100%;">
                 <div class="col-md-11">
                     <ul class="list-inline text-right mb-0">
                         <li class="list-inline-item">
@@ -59,6 +60,7 @@
             </div>
         </div>
     </footer>
+    </div>
     <div class="modal fade" id="modal-contact">
     <div class="modal-dialog">
       <div class="modal-content">

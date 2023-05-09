@@ -18,6 +18,13 @@ _Note: the project is both production and development ready._
 * Gunicorn (For production)
 * Google Cloud (For production)
 
+## Interesting features:
+
+* Avatars/posts aspect ratio and size limitations
+* Fully working email sender (E.g. new comment notification for admin with link on the comment in admin page)
+* Pop-up "Contact us" window
+* Optimised both for mobile and desktop use
+
 ## Screenshots:
 ### Let's register an account and create two posts
 ![picture alt](https://res.cloudinary.com/dbtmzypoa/image/upload/v1683054600/Baidygram%20screenshots/rsp1p6nogr7cbk7t8duu.png "Let's register an account and create two posts")

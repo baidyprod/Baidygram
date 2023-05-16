@@ -55,15 +55,28 @@ _Note: the project is both production and development ready._
 2. Clone this repository
 3. Create and activate virtual environment
 4. Open terminal in project folder and run these commands:
+   ```shell
     * pip install -r requirements.txt
+   ```
+   ```shell
     * ./manage.py migrate
-    * ./manage.py createsuperuser   (IN THIS STEP YOU CREATE ADMIN, ENTER EVERYTHING IS ASKED)
+   ```
+   (IN THIS STEP BELOW YOU CREATE ADMIN, ENTER EVERYTHING IS ASKED)
+   ```shell
+    * ./manage.py createsuperuser
+   ```
+   ```shell
     * ./manage.py runserver
-5. Open second terminal window in project folder and run this command: 
+   ```
+5. Open second terminal window in project folder and run this command:
+   ```shell
     * redis-server
+   ```
 6. Open third terminal window in project folder and run this command: 
+   ```shell
     * celery -A core worker --loglevel=info
-
+   ```
+   
 __That's it! Now you run Baidygram locally! To stop running just press Control+C in each terminal and then easily close them.__
 
 ___Have fun ;)___
